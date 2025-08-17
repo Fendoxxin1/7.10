@@ -6,20 +6,35 @@ export type User = {
   age: number;
   jobTitle: string;
   location: string;
+  email: string;
+  username: string;
+  phone: string;
+  password: string;
+  gender: string;
 };
 
+export type CreateUser = Omit<User, "id">;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "https://68a1eee36f8c17b8f5db21c6.mockapi.io",
 });
 
 export const getUsers = async (): Promise<User[]> => {
-  const { data } = await api.get("/users");
-  return data;
+  const res = await api.get<User[]>("/users");
+  return res.data;
 };
 
-export const createUser = async (user: User): Promise<User> => {
-  const { data } = await api.post("/users", user);
-  return data;
+export const createUser = async (payload: CreateUser): Promise<User> => {
+  const res = await api.post<User>("/users", payload);
+  return res.data;
+};
+
+export const updateUser = async (
+  id: string,
+  payload: Partial<CreateUser>
+): Promise<User> => {
+  const res = await api.put<User>(`/users/${id}`, payload);
+  return res.data;
 };
 
 export const deleteUser = async (id: string): Promise<void> => {
